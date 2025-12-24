@@ -17,7 +17,7 @@
 
 **Calculate grades • Plan courses • Get career guidance**
 
-[Live Demo](https://bits-cs-ef66a.web.app) · [Report Bug](../../issues) · [Request Feature](../../issues)
+[Live Demo](https://cs.astralelite.org/chat) · [Report Bug](../../issues) · [Request Feature](../../issues)
 
 </div>
 

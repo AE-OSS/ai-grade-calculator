@@ -21,6 +21,7 @@ cd ai-grade-calculator
 🎨 Start the frontend
 ```bash
 cd frontend
+npm install
 npm run dev
 ```
 ⚙️ Start the backend

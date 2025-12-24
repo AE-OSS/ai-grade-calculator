@@ -2,92 +2,35 @@ name: Weekly Docker Security Scan
 
 on:
   schedule:
-    # Run every Sunday at midnight UTC
     - cron: '0 0 * * 0'
-  workflow_dispatch: # Allow manual trigger
+  workflow_dispatch:
 
 jobs:
   build-and-scan:
     name: Build & Scan Images
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
+      - uses: docker/setup-buildx-action@v3
 
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
-
-      # Build Backend
-      - name: Build Backend Image
+      - name: Build Backend
         run: docker build -t backend:scan ./backend
 
-      # Build Frontend
-      - name: Build Frontend Image
+      - name: Build Frontend
         run: docker build -t frontend:scan ./frontend
 
-      # Scan Backend with Trivy (save to file)
       - name: Scan Backend
         uses: aquasecurity/trivy-action@master
         with:
           image-ref: 'backend:scan'
-          format: 'json'
-          output: 'backend-results.json'
-          severity: 'CRITICAL,HIGH,MEDIUM,LOW'
+          format: 'table'
+          exit-code: '1'
+          severity: 'CRITICAL,HIGH'
 
-      # Scan Frontend with Trivy (save to file)
       - name: Scan Frontend
         uses: aquasecurity/trivy-action@master
         with:
           image-ref: 'frontend:scan'
-          format: 'json'
-          output: 'frontend-results.json'
-          severity: 'CRITICAL,HIGH,MEDIUM,LOW'
-
-      # Count vulnerabilities and set badge
-      - name: Generate Badge Data
-        id: badge
-        run: |
-          # Parse vulnerability counts from JSON
-          BACKEND_TOTAL=$(jq '[.Results[]?.Vulnerabilities // [] | length] | add // 0' backend-results.json)
-          FRONTEND_TOTAL=$(jq '[.Results[]?.Vulnerabilities // [] | length] | add // 0' frontend-results.json)
-          TOTAL=$((BACKEND_TOTAL + FRONTEND_TOTAL))
-          
-          # Count by severity
-          CRITICAL=$(jq '[.Results[]?.Vulnerabilities[]? | select(.Severity=="CRITICAL")] | length' backend-results.json frontend-results.json | paste -sd+ | bc)
-          HIGH=$(jq '[.Results[]?.Vulnerabilities[]? | select(.Severity=="HIGH")] | length' backend-results.json frontend-results.json | paste -sd+ | bc)
-          
-          echo "Total vulnerabilities: $TOTAL (Critical: $CRITICAL, High: $HIGH)"
-          
-          if [ "$CRITICAL" -gt 0 ]; then
-            echo "message=${CRITICAL} critical" >> $GITHUB_OUTPUT
-            echo "color=red" >> $GITHUB_OUTPUT
-          elif [ "$HIGH" -gt 0 ]; then
-            echo "message=${HIGH} high" >> $GITHUB_OUTPUT
-            echo "color=orange" >> $GITHUB_OUTPUT
-          elif [ "$TOTAL" -gt 0 ]; then
-            echo "message=${TOTAL} issues" >> $GITHUB_OUTPUT
-            echo "color=yellow" >> $GITHUB_OUTPUT
-          else
-            echo "message=passing" >> $GITHUB_OUTPUT
-            echo "color=brightgreen" >> $GITHUB_OUTPUT
-          fi
-
-      # Update dynamic badge
-      - name: Update Badge
-        uses: schneegans/dynamic-badges-action@v1.7.0
-        with:
-          auth: ${{ secrets.GIST_TOKEN }}
-          gistID: ${{ vars.BADGE_GIST_ID }}
-          filename: security-badge.json
-          label: 🔒 Security
-          message: ${{ steps.badge.outputs.message }}
-          color: ${{ steps.badge.outputs.color }}
-
-      # Upload scan results as artifact
-      - name: Upload Scan Results
-        uses: actions/upload-artifact@v4
-        with:
-          name: security-scan-results
-          path: |
-            backend-results.json
-            frontend-results.json
+          format: 'table'
+          exit-code: '1'
+          severity: 'CRITICAL,HIGH'

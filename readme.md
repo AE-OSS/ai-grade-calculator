@@ -17,7 +17,7 @@
 
 **Calculate grades • Plan courses • Get career guidance**
 
-[Use](https://cs.astralelite.org/chat) · [CONTRIBUTE](./CONTRIBUTING.md) ·  [Report Bug](../../issues) · [Request Feature](../../issues)
+[Use](https://cs.astralelite.org/chat) · [CONTRIBUTE](./CONTRIBUTING.md) ·  [Report Bug](../../issues) · [Request Feature](../../issues) · [Contact](./SUPPORT.md)
 
 </div>
 

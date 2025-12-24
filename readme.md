@@ -206,6 +206,21 @@ The system contains complete curriculum data for:
 
 ---
 
+## 🌸 Contributing
+
+We'd love your help! Check out our [Contributing Guide](CONTRIBUTING.md) to get started.
+
+**Quick Start:**
+
+```bash
+# Clone & run frontend
+git clone https://github.com/AE-OSS/bits-cs.git
+cd bits-cs/frontend
+npm install && npm run dev
+```
+
+---
+
 ## 📝 License
 
 This project is licensed under the GNU General Public License v3.0 - see the [LICENSE](LICENSE) file for details.

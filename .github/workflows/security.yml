@@ -38,8 +38,8 @@ jobs:
         with:
           category: "/language:${{matrix.language}}"
 
-  # Secret scanning
-  gitleaks:
+  # Secret scanning with TruffleHog (free for organizations)
+  secrets:
     name: Secret Scanning
     runs-on: ubuntu-latest
     steps:
@@ -48,10 +48,10 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Run Gitleaks
-        uses: gitleaks/gitleaks-action@v2
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: TruffleHog Secret Scan
+        uses: trufflesecurity/trufflehog@main
+        with:
+          extra_args: --only-verified
 
 # NOTE: Container scanning removed - use Docker Desktop Scout for manual scans
 # To scan locally: docker scout cves <image-name>

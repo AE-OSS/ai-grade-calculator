@@ -47,7 +47,7 @@ func NewGeminiService(ctx context.Context, apiKey string) (*GeminiService, error
 	}
 
 	// Gemini 2.0 Flash - using correct model path format
-	model := client.GenerativeModel("gemini-2.0-flash")
+	model := client.GenerativeModel("gemini-flash-latest")
 
 	// Configure for long instructions handling
 	model.SetMaxOutputTokens(8192)
